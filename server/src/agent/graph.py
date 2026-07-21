@@ -12,6 +12,19 @@ from langgraph.graph import StateGraph
 from langgraph.runtime import Runtime
 from typing_extensions import TypedDict
 
+import logging
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+llm = HuggingFaceEndpoint(
+        repo_id="Qwen/Qwen2.5-7B-Instruct",
+        temperature=0.7
+    )
+
+model = ChatHuggingFace(llm=llm)
 
 class Context(TypedDict):
     """Context parameters for the agent.
@@ -39,6 +52,9 @@ async def call_model(state: State, runtime: Runtime[Context]) -> Dict[str, Any]:
 
     Can use runtime context to alter behavior.
     """
+
+    logger.info(f"State:{state}")
+
     return {
         "changeme": "output from call_model. "
         f"Configured with {(runtime.context or {}).get('my_configurable_param')}"
