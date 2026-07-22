@@ -5,12 +5,15 @@ import styles from './Chat.module.css'
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:2024'
 const client = new Client({ apiUrl: API_BASE })
 
-function ChatMessage({ role, content }) {
+function ChatMessage({ role, content, isStreaming }) {
   return (
     <div className={`${styles.message} ${role === 'user' ? styles.user : styles.agent}`}>
       <div className={styles.bubble}>
         <span className={styles.role}>{role === 'user' ? 'You' : 'AI'}</span>
-        <p className={styles.content}>{content}</p>
+        <p className={styles.content}>
+          {content}
+          {role === 'agent' && isStreaming && <span className={styles.cursor} aria-hidden="true" />}
+        </p>
       </div>
     </div>
   )
@@ -23,6 +26,7 @@ export default function Chat() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [streamingId, setStreamingId] = useState(null)
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -52,22 +56,51 @@ export default function Chat() {
         assistantId,
         {
           input: { changeme: text },
-          streamMode: 'values',
+          streamMode: ['messages'],
         },
       )
 
-      let lastContent = ''
+      let assistantMessageId = null
+      let hasStartedStreaming = false
 
       for await (const event of stream) {
-        if (event.event === 'values' && event.data?.changeme) {
-          lastContent = String(event.data.changeme)
-        }
+        console.log('Event:', event) // Debug log to see what events we're getting
+
+        if (event.event === 'messages/partial') {
+          // Handle values streaming
+          const value = event.data[0]?.content
+          console.log('Values event:', value)
+          if (value !== undefined) {
+            const text = String(value)
+            hasStartedStreaming = true
+            
+            setMessages((prev) => {
+              // Find the last message if it's from the agent and currently streaming
+              const lastMessageIndex = prev.length - 1
+              if (lastMessageIndex >= 0 && prev[lastMessageIndex].role === 'agent') {
+                // Update the last message with accumulated content
+                const updatedMessages = [...prev]
+                updatedMessages[lastMessageIndex] = { 
+                  ...updatedMessages[lastMessageIndex], 
+                  content: text 
+                }
+                return updatedMessages
+              } else {
+                // Create the first assistant message
+                setStreamingId(prev.length)
+                return [...prev, { role: 'agent', content: text, id: prev.length }]
+              }
+            })
+          }
+        } 
       }
 
-      setMessages((prev) => [
-        ...prev,
-        { role: 'agent', content: lastContent || 'No response from agent.' },
-      ])
+      setStreamingId(null)
+
+      // If we didn't get any streaming content, show a message
+      if (!hasStartedStreaming) {
+        setMessages((prev) => [...prev, { role: 'agent', content: 'There are some problems with the agent.' }])
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -83,7 +116,7 @@ export default function Chat() {
 
       <div className={styles.messages}>
         {messages.map((msg, index) => (
-          <ChatMessage key={index} role={msg.role} content={msg.content} />
+          <ChatMessage key={index} role={msg.role} content={msg.content} isStreaming={msg.id === streamingId} />
         ))}
         {loading && (
           <div className={styles.loading}>
