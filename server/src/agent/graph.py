@@ -12,17 +12,20 @@ from langgraph.graph import StateGraph
 from langgraph.runtime import Runtime
 from typing_extensions import TypedDict
 
+import os
 import logging
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain_core.messages import HumanMessage
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = ""
+
 llm = HuggingFaceEndpoint(
-        repo_id="Qwen/Qwen2.5-7B-Instruct",
-        temperature=0.7
-    )
+    repo_id="meta-llama/Llama-3.1-8B-Instruct",
+)
 
 model = ChatHuggingFace(llm=llm)
 
@@ -44,7 +47,12 @@ class State:
     See: https://langchain-ai.github.io/langgraph/concepts/low_level/#state
     """
 
+    messages: list = None
     changeme: str = "example"
+
+    def __post_init__(self):
+        if self.messages is None:
+            self.messages = []
 
 
 async def call_model(state: State, runtime: Runtime[Context]) -> Dict[str, Any]:
@@ -55,11 +63,18 @@ async def call_model(state: State, runtime: Runtime[Context]) -> Dict[str, Any]:
 
     logger.info(f"State:{state}")
 
-    return {
-        "changeme": "output from call_model. "
-        f"Configured with {(runtime.context or {}).get('my_configurable_param')}"
-    }
+    messages = state.messages + [HumanMessage(content=state.changeme)]
+    content = ""
+    async for chunk in model.astream(messages):
+        logger.info(f"Chunk:{chunk}")
+        if chunk.content:
+            content += chunk.content
 
+    logger.info(f"Response:{content}")
+
+    messages.append({"role": "assistant", "content": content})
+
+    return {"messages": messages, "changeme": content}
 
 # Define the graph
 graph = (
