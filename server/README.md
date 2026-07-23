@@ -59,3 +59,27 @@ For more advanced features and examples, refer to the [LangGraph documentation](
 
 LangGraph Studio also integrates with [LangSmith](https://smith.langchain.com/) for more in-depth tracing and collaboration with teammates, allowing you to analyze and optimize your chatbot's performance.
 
+## Running with Docker
+
+You can also run this application using Docker:
+
+1. Build the Docker image:
+
+```bash
+docker build -t langgraph-agent .
+```
+
+2. Run the container:
+
+```bash
+docker run -p 2024:2024 langgraph-agent
+```
+
+Or use Docker Compose:
+
+```bash
+docker-compose up
+```
+
+Note: You'll need to set the `HUGGINGFACEHUB_API_TOKEN` environment variable in a `.env` file or pass it as an environment variable to the container.
+
