@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  sync-space-one:
+  sync-client-code:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -20,7 +20,7 @@ jobs:
           subdirectory: 'client'
           space_sdk: 'static'
 
-  sync-space-two:
+  sync-server-code:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
