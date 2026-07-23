@@ -3,6 +3,7 @@ name: Sync Codes to HF Spaces
 on:
   push:
     branches: [main]
+  workflow_dispatch: # Enables the manual trigger button
 
 jobs:
   sync-client-code:
