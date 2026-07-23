@@ -1,3 +1,12 @@
+---
+title: Auto Train Agents Server
+emoji: 🐳
+colorFrom: purple
+colorTo: gray
+sdk: docker
+app_port: 2024
+---
+
 # New LangGraph Project
 
 [![CI](https://github.com/langchain-ai/new-langgraph-project/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/langchain-ai/new-langgraph-project/actions/workflows/unit-tests.yml)
