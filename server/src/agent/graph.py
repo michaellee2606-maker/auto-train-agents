@@ -21,8 +21,6 @@ from langchain_core.messages import HumanMessage
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = ""
-
 llm = HuggingFaceEndpoint(
     repo_id="meta-llama/Llama-3.1-8B-Instruct",
 )
