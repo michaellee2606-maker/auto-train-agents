@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Client } from '@langchain/langgraph-sdk'
 import styles from './Chat.module.css'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:2024'
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://huggingface.co/spaces/Cripple-Lee/Auto-Train-Agents-Server'
 const client = new Client({ apiUrl: API_BASE })
 
 function ChatMessage({ role, content, isStreaming }) {

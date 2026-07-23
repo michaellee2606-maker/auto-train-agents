@@ -9,6 +9,42 @@ app_file: dist/index.html
 app_build_command: npm run build
 ---
 
+# Auto Train Agents Client
+
+This is the client interface for the Auto Train Agents application.
+
+## Connecting to the Hugging Face Space Server
+
+The client is configured to connect to the Hugging Face Space server by default:
+
+```
+https://huggingface.co/spaces/Cripple-Lee/Auto-Train-Agents-Server
+```
+
+### Environment Configuration
+
+The API endpoint can be configured using the `VITE_API_BASE` environment variable. To use a different endpoint:
+
+1. Create a `.env` file in the client directory
+2. Add the following line with your desired endpoint:
+   ```
+   VITE_API_BASE=https://your-custom-endpoint.com
+   ```
+
+### Running the Client
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+The client will automatically connect to the Hugging Face Space server.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
