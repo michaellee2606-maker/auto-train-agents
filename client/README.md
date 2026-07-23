@@ -1,3 +1,14 @@
+---
+title: Auto Train Agents Client
+emoji: 🐨
+colorFrom: blue
+colorTo: blue
+sdk: static
+pinned: false
+app_file: index.html
+app_build_command: npm run build
+---
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
