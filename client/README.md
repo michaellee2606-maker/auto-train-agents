@@ -1,8 +1,8 @@
 ---
 title: Auto Train Agents Client
-emoji: 🐨
+emoji: 🐳
 colorFrom: blue
-colorTo: blue
+colorTo: gold
 sdk: static
 pinned: false
 app_file: dist/index.html
