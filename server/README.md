@@ -1,8 +1,8 @@
 ---
 title: Auto Train Agents Server
-emoji: 🐳
-colorFrom: purple
-colorTo: gray
+emoji: ⚡️
+colorFrom: orange
+colorTo: yellow
 sdk: docker
 app_port: 2024
 ---
