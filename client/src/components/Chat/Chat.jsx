@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Client } from '@langchain/langgraph-sdk'
+import { useAuth } from '../../context/useAuth.js'
 import styles from './Chat.module.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://cripple-lee-auto-train-agents-server.hf.space'
@@ -20,6 +21,8 @@ function ChatMessage({ role, content, isStreaming }) {
 }
 
 export default function Chat() {
+  const { hfToken } = useAuth()
+
   const [messages, setMessages] = useState([
     { role: 'agent', content: 'Hello! How can I help you today?' },
   ])
@@ -56,11 +59,11 @@ export default function Chat() {
         assistantId,
         {
           input: { changeme: text },
+          context: { hf_token: hfToken },
           streamMode: ['messages'],
         },
       )
 
-      let assistantMessageId = null
       let hasStartedStreaming = false
 
       for await (const event of stream) {
